@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from loadData import train_images
-from loadData import train_labels
+from loadData import train_images, train_labels, show_image
 
 num_classes = len(np.unique(train_labels))
 print(num_classes)
@@ -10,19 +9,23 @@ data = np.array(train_images)
 m, n = data.shape # m = number of samples, n = number of features (784 for 28x28 images)
 print("Data shape:", data.shape, "Samples:", m, "Features:", n)
 
-np.random.shuffle(data)
+indices = np.arange(m)
+np.random.shuffle(indices)
+data = data[indices]
+labels = train_labels[indices]
+print(labels)
 
 # Split dataset
 X_train = data[1000:m].T  # Transpose to shape (n, m-1000)
 X_dev = data[0:1000].T  # Development set (for debugging)
-Y_train = train_labels[1000:m]  # Ensure labels match the training set
-Y_dev = train_labels[0:1000]  # Labels for the dev set
+Y_train = labels[1000:m] # Ensure labels match the training set
+Y_dev = labels[0:1000] # Labels for the dev set
 print("X_train shape:", X_train.shape, "Y_train shape:", Y_train.shape)
 
 def initParams():
-    W1 = np.random.randn(47,784) * 0.01  # Small random values
-    b1 = np.zeros((47,1)) # Initialize biases as zeros
-    W2 = np.random.randn(47,47) * 0.01
+    W1 = np.random.randn(256,784) * np.sqrt(2.0 / 784)  # He init #256 neuron layer
+    b1 = np.zeros((256,1)) # Initialize biases as zeros
+    W2 = np.random.randn(47,256) * np.sqrt(2.0 / 256)  # He init #47 neuron output layer
     b2 = np.zeros((47,1))
     return W1, b1, W2, b2
 
@@ -57,7 +60,7 @@ def backPropagation(Z1, A1, Z2, A2, W2, X, Y):
     dW2 = (1 / m) * dZ2.dot(A1.T)
     db2 = (1 / m) * np.sum(dZ2, axis=1, keepdims=True)
     dZ1 = W2.T.dot(dZ2) * derivReLU(Z1)
-    dW1 = (1 / m) * dZ2.dot(X.T)
+    dW1 = (1 / m) * dZ1.dot(X.T)
     db1 = (1 / m) * np.sum(dZ1, axis=1, keepdims=True)
     return dW1, db1, dW2, db2
 
@@ -84,8 +87,9 @@ def gradientDescent(X, Y, iterations, alpha):
         if i % 50 == 0:
             print("Iteration: ", i)
             print("Accuracy (%): ", getAccuracy(getPredictions(A2), Y))
+            show_image(i)
     return W1, b1, W2, b2
 
-W1, b1, W2, b2 = gradientDescent(X_train, Y_train, 1000, 0.1)
+W1, b1, W2, b2 = gradientDescent(X_train, Y_train, 500, 0.1)
 
 print("Unique labels in dataset:", np.unique(Y_train))
