@@ -1,64 +1,76 @@
-const canvas = document.getElementById('drawCanvas');
+const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const colorPicker = document.getElementById('colorPicker');
-const lineWidth = document.getElementById('lineWidth');
-const clearBtn = document.getElementById('clearBtn');
-
-// Set canvas size
-canvas.width = 800;
-canvas.height = 500;
-
-// Drawing state
 let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
 
-// Initialize canvas
-ctx.strokeStyle = colorPicker.value;
-ctx.lineWidth = lineWidth.value;
+// Canvas setup
+ctx.fillStyle = 'white';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.lineWidth = 15;
 ctx.lineCap = 'round';
 
-// Event Listeners
+// Drawing functions
 canvas.addEventListener('mousedown', startDrawing);
 canvas.addEventListener('mousemove', draw);
 canvas.addEventListener('mouseup', stopDrawing);
 canvas.addEventListener('mouseout', stopDrawing);
 
-colorPicker.addEventListener('input', updateColor);
-lineWidth.addEventListener('input', updateLineWidth);
-clearBtn.addEventListener('click', clearCanvas);
-
 function startDrawing(e) {
     isDrawing = true;
-    [lastX, lastY] = [e.offsetX, e.offsetY];
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
 }
 
 function draw(e) {
     if (!isDrawing) return;
-    
-    ctx.strokeStyle = colorPicker.value;
-    ctx.lineWidth = lineWidth.value;
-    
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
     ctx.lineTo(e.offsetX, e.offsetY);
     ctx.stroke();
-    
-    [lastX, lastY] = [e.offsetX, e.offsetY];
 }
 
 function stopDrawing() {
     isDrawing = false;
 }
 
-function updateColor() {
-    ctx.strokeStyle = this.value;
-}
-
-function updateLineWidth() {
-    ctx.lineWidth = this.value;
-}
-
 function clearCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    document.getElementById('prediction').textContent = '';
+}
+
+async function predict() {
+    // Preprocess image
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const processed = preprocessImage(imageData);
+
+    // Send to backend
+    const response = await fetch('/predict', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ image: processed })
+    });
+
+    const prediction = await response.json();
+    document.getElementById('prediction').textContent = prediction.character;
+}
+
+function preprocessImage(imageData) {
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    
+    // Resize to 28x28
+    tempCanvas.width = 28;
+    tempCanvas.height = 28;
+    tempCtx.drawImage(canvas, 0, 0, 28, 28);
+
+    // Convert to grayscale and normalize
+    const data = tempCtx.getImageData(0, 0, 28, 28).data;
+    const grayscale = [];
+    
+    for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i+1] + data[i+2]) / 3;
+        grayscale.push(255 - avg);  // Invert colors (EMNIST style)
+    }
+    
+    return grayscale.map(x => x / 255);  // Normalize
 }

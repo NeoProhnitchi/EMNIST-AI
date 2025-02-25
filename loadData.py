@@ -15,10 +15,10 @@ def load_idx(filename):
             raise ValueError("Invalid IDX file") #error message
 
 # loads images and labels to respective arrays
-train_images = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-balanced-train-images-idx3-ubyte") 
-train_labels = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-balanced-train-labels-idx1-ubyte")
-test_images = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-balanced-test-images-idx3-ubyte")
-test_labels = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-balanced-test-labels-idx1-ubyte")
+train_images = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-train-images-idx3-ubyte") 
+train_labels = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-train-labels-idx1-ubyte")
+test_images = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-test-images-idx3-ubyte")
+test_labels = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-test-labels-idx1-ubyte")
 
 # Normalize images (convert pixel values from 0-255 to 0-1)
 train_images = train_images / 255.0
@@ -43,7 +43,7 @@ def load_mapping(mapping_file):
     return mapping
 
 # Load the label mapping
-label_mapping = load_mapping("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-balanced-mapping.txt")
+label_mapping = load_mapping("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-mapping.txt")
 
 # Convert the first 5 labels
 #print("First 5 labels as characters:", [label_mapping[label] for label in train_labels[:5]])
@@ -60,5 +60,5 @@ def show_image(index):
     plt.show()
 
 # Test with an image
-'''for i in range(0,1):
+'''for i in range(0,10):
     show_image(i)  # Show the first image with its correct label'''
