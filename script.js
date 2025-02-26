@@ -37,21 +37,27 @@ function clearCanvas() {
 }
 
 async function predict() {
-    // Preprocess image
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const processed = preprocessImage(imageData);
+    try {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const processed = preprocessImage(imageData);
+        
+        const response = await fetch('/predict', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ image: processed })
+        });
 
-    // Send to backend
-    const response = await fetch('/predict', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ image: processed })
-    });
-
-    const prediction = await response.json();
-    document.getElementById('prediction').textContent = prediction.character;
+        if (!response.ok) throw new Error('Prediction failed');
+        
+        const result = await response.json();
+        if (result.error) throw new Error(result.error);
+        
+        document.getElementById('prediction').textContent = 
+            `${result.character} (${(result.confidence * 100).toFixed(1)}% confident)`;
+    } catch (error) {
+        console.error('Prediction error:', error);
+        document.getElementById('prediction').textContent = 'Error: ' + error.message;
+    }
 }
 
 function preprocessImage(imageData) {
@@ -72,5 +78,9 @@ function preprocessImage(imageData) {
         grayscale.push(255 - avg);  // Invert colors (EMNIST style)
     }
     
-    return grayscale.map(x => x / 255);  // Normalize
+    // Verify final array length is 784
+    if (grayscale.length !== 784) {
+        throw new Error('Invalid image size after preprocessing');
+    }
+    return grayscale;
 }
