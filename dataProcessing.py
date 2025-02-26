@@ -29,9 +29,9 @@ Y_dev = labels[0:3000] # Labels for the dev set
 #print("Max label in Y_train:", np.max(Y_train))  # Should be 45 for 46 classes
 
 def initParams():
-    W1 = np.random.randn(256,784) * np.sqrt(2.0 / 784)  # He init #256 neuron layer
-    b1 = np.zeros((256,1)) # Initialize biases as zeros
-    W2 = np.random.randn(62,256) * np.sqrt(2.0 / 256)  # He init #62 neuron output layer
+    W1 = np.random.randn(512,784) * np.sqrt(2.0 / 784)  # He init #256 neuron layer
+    b1 = np.zeros((512,1)) # Initialize biases as zeros
+    W2 = np.random.randn(62,512) * np.sqrt(2.0 / 512)  # He init #62 neuron output layer
     b2 = np.zeros((62,1))
     return W1, b1, W2, b2
 
@@ -105,7 +105,7 @@ def compute_loss(A2, Y):
     oneHotY = oneHotEncode(Y, numClasses=62)
     return -np.sum(oneHotY * np.log(A2 + 1e-8)) / Y.size  # Cross-entropy
 
-lambdaReg = 0.001
+lambdaReg = 0.002
 decayRate = 0.001
 
 def gradientDescent(X, Y, iterations, alpha, saveModel=True):
@@ -165,23 +165,23 @@ def gradientDescent(X, Y, iterations, alpha, saveModel=True):
             print()
             #show_image(i)
 
-            '''stopAns = input("stop?: [y/n]")
+            stopAns = input("stop?: [y/n]")
             if stopAns == "y":
                 break
             else:
-                continue'''
+                continue
     if saveModel:
         saveParams(W1, b1, W2, b2)  # Save after training
     return W1, b1, W2, b2
 
-W1, b1, W2, b2 = gradientDescent(X_train, Y_train, 500, 0.0005, saveModel=True)
+#W1, b1, W2, b2 = gradientDescent(X_train, Y_train, 500, 0.001, saveModel=True)
 
 #print("Unique labels in dataset:", np.unique(Y_train))
 
 #print(load_params(folder="model_params"))
 
 
-'''
+
 
 #test on test images of EMNIST dataset
 
@@ -224,4 +224,3 @@ def show_test_sample(index):
 """for i in range(5):
     show_test_sample(i)"""
 
-'''
