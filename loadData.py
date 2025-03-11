@@ -15,14 +15,24 @@ def load_idx(filename):
             raise ValueError("Invalid IDX file") #error message
 
 # loads images and labels to respective arrays
-train_images = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-train-images-idx3-ubyte") 
-train_labels = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-train-labels-idx1-ubyte")
-test_images = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-test-images-idx3-ubyte")
-test_labels = load_idx("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-test-labels-idx1-ubyte")
+train_images = load_idx("C:\EMNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-train-images-idx3-ubyte") 
+train_labels = load_idx("C:\EMNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-train-labels-idx1-ubyte")
+test_images = load_idx("C:\EMNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-test-images-idx3-ubyte")
+test_labels = load_idx("C:\EMNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-test-labels-idx1-ubyte")
 
 # Normalize images (convert pixel values from 0-255 to 0-1)
 train_images = train_images / 255.0
 test_images = test_images / 255.0
+
+# Add this after loading/normalizing images
+def preprocess_emnist(img_array):
+    img_array = img_array.reshape(-1, 28, 28)
+    img_array = np.rot90(img_array, k=-3, axes=(1, 2))  # Rotate 90° clockwise
+    img_array = np.fliplr(img_array)  # Flip horizontally
+    return img_array.reshape(-1, 28*28)
+
+train_images = preprocess_emnist(train_images)
+test_images = preprocess_emnist(test_images)
 
 #print(train_labels.size)
 
@@ -43,15 +53,15 @@ def load_mapping(mapping_file):
     return mapping
 
 # Load the label mapping
-label_mapping = load_mapping("C:\MNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-mapping.txt")
+label_mapping = load_mapping("C:\EMNIST AI\MNIST-AI\EMNIST dataset\emnist-byclass-mapping.txt")
 
 # Convert the first 5 labels
 #print("First 5 labels as characters:", [label_mapping[label] for label in train_labels[:5]])
 
 def show_image(index):
     img = train_images[index].reshape(28, 28)  # Reshape to 28x28 pixels
-    img = np.rot90(img, k=-1)  # Rotate 90 degrees clockwise
-    img = np.fliplr(img)  # Flip horizontally (optional, sometimes needed)
+    #img = np.rot90(img, k=-1)  # Rotate 90 degrees clockwise
+    #img = np.fliplr(img)  # Flip horizontally (optional, sometimes needed)
     plt.imshow(img, cmap='gray')
     
     label_char = label_mapping[train_labels[index]]  # Convert to character
@@ -60,5 +70,5 @@ def show_image(index):
     plt.show()
 
 # Test with an image
-'''for i in range(0,10):
-    show_image(i)  # Show the first image with its correct label'''
+for i in range(0,0):
+    show_image(i)  # Show the first image with its correct label

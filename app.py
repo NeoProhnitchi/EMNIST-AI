@@ -30,10 +30,10 @@ st.write("Draw a letter below (white on black):")
 
 # Canvas scaled to 280x280 but internally 28x28
 canvas = st_canvas(
-    fill_color="black",
+    fill_color="green",
     stroke_width=15,
-    stroke_color="white",
-    background_color="black",
+    stroke_color="black",
+    background_color="white",
     width=280,
     height=280,
     drawing_mode="freedraw",
@@ -44,11 +44,6 @@ if st.button("Predict"):
     if canvas.image_data is not None:
         # Extract and downsample to 28x28
         img = cv2.resize(canvas.image_data[:, :, 0], (28, 28), interpolation=cv2.INTER_AREA)
-        
-        # Invert, rotate, flip
-        img = 255 - img
-        img = np.rot90(img, k=-1)
-        img = np.fliplr(img)
         
         # Normalize and reshape
         img_processed = img.reshape(784, 1) / 255.0
