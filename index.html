@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>EMNIST Letter Recognition</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handwriting Recognition</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Draw a Letter</h1>
-        <canvas id="canvas" width="400" height="400"></canvas>
-        <div class="controls">
-            <button onclick="clearCanvas()">Clear</button>
-            <button onclick="predict()">Predict</button>
-        </div>
-        <div id="result">
-            <h3>Prediction: <span id="prediction"></span></h3>
-        </div>
-    </div>
+    <h1>Draw a Character</h1>
+    <canvas id="canvas"></canvas>
+    <button id="clear">Clear</button>
+    <button id="predict">Predict</button>
+    <p id="result"></p>
+
     <script src="script.js"></script>
 </body>
 </html>

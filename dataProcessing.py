@@ -29,9 +29,9 @@ Y_dev = labels[0:3000] # Labels for the dev set
 #print("Max label in Y_train:", np.max(Y_train))  # Should be 45 for 46 classes
 
 def initParams():
-    W1 = np.random.randn(512,784) * np.sqrt(2.0 / 784)  # He init #256 neuron layer
-    b1 = np.zeros((512,1)) # Initialize biases as zeros
-    W2 = np.random.randn(62,512) * np.sqrt(2.0 / 512)  # He init #62 neuron output layer
+    W1 = np.random.randn(1024,784) * np.sqrt(2.0 / 784)  # He init #256 neuron layer
+    b1 = np.zeros((1024,1)) # Initialize biases as zeros
+    W2 = np.random.randn(62,1024) * np.sqrt(2.0 / 1024)  # He init #62 neuron output layer
     b2 = np.zeros((62,1))
     return W1, b1, W2, b2
 
@@ -105,7 +105,7 @@ def compute_loss(A2, Y):
     oneHotY = oneHotEncode(Y, numClasses=62)
     return -np.sum(oneHotY * np.log(A2 + 1e-8)) / Y.size  # Cross-entropy
 
-lambdaReg = 0.002
+lambdaReg = 0.0005
 decayRate = 0.001
 
 def gradientDescent(X, Y, iterations, alpha, saveModel=True):
@@ -174,7 +174,7 @@ def gradientDescent(X, Y, iterations, alpha, saveModel=True):
         saveParams(W1, b1, W2, b2)  # Save after training
     return W1, b1, W2, b2
 
-#W1, b1, W2, b2 = gradientDescent(X_train, Y_train, 500, 0.001, saveModel=True)
+#W1, b1, W2, b2 = gradientDescent(X_train, Y_train, 2001, 0.001, saveModel=True)
 
 #print("Unique labels in dataset:", np.unique(Y_train))
 
