@@ -4,27 +4,7 @@ import cv2
 from streamlit_drawable_canvas import st_canvas
 from dataProcessing import forwardPropagation
 
-st.markdown(
-    """
-    <style>
-        /* Set the entire page background */
-        .stApp {
-            background-color: #0078D7 !important;  /* Soft blue */
-        }
 
-        /* Remove dark box effect */
-        .block-container {
-            background-color: transparent !important;
-        }
-
-        /* Make sidebar (if any) match the main background */
-        .css-1lcbmhc {
-            background-color: transparent !important;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 # Custom preprocessing to match EMNIST format
 def preprocess_image(img):
@@ -55,6 +35,16 @@ label_map = [
 
 st.title("EMNIST Letter Recognition")
 st.write("Draw a character below (black on white):")
+
+bgcolor2 = "green"
+height = 400
+width = 400
+
+html_design = """
+		<div style="height:{1000}px;width:{1000}px;background-color:{"green"};border-radius:{}px {}px {}px {}px;border-style:{};border-color:{}">
+		</div>
+		"""
+
 
 # Create drawing canvas
 canvas = st_canvas(
