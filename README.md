@@ -23,7 +23,7 @@ How It Works
 - Web Interface: Users can draw a character on a canvas, send it to the backend, and instantly see the recognized result.
 
 Results
-- Achieved ~92% accuracy on a custom handwritten dataset
+- Achieved ~87% accuracy on the EMNIST handwritten dataset of 800,000+ images
 - Fully interpretable model with visualized weights and activations
 - Demonstrates neural network fundamentals without any external ML libraries
 
